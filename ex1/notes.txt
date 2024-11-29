@@ -1,0 +1,3 @@
+https://docs.oracle.com/cd/E19957-01/805-4939/z40007365d2f/index.html INTEGER*2 
+
+Montangero: pagg 126-128

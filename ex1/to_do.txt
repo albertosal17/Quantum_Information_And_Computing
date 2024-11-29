@@ -1,0 +1,9 @@
+-testare al limite la built in
+
+-testare con le optimation flags
+
+-Fare punto b primo esercizio (somma reali)
+	-Rivedere lezione montangero su precision numeri float
+
+-Scrivere slides
+

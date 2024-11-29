@@ -1,0 +1,35 @@
+Slide 1
+
+Fortran Advantages:
+
+- Compiled → Faster: 
+  Fortran is compiled to machine code, making it very fast for executing 
+  complex numerical computations.
+- Powerful Numerical Computing Capacity: Fortran is known for its   
+  excellent performance and libraries optimized for scientific and numerical 
+  tasks.
+- Numerical Precision: Fortran provides robust support for numerical precision, which is essential for applications in scientific    
+  computing that require high accuracy over long calculations.
+
+Disadvantages of Fortran:
+    Ease of Use and Syntax:
+         Fortran’s syntax can be more complex and less intuitive, making rapid prototyping and development slower.
+
+
+
+
+Python Pros:
+- Powerful Libraries for Data Analysis and Visualization:  
+  Python’s ecosystem includes tools such as NumPy, Pandas, Matplotlib, 
+  and Seaborn, making it a popular choice for data handling and 
+  visualization.
+- General Ease of Use: Python’s simple syntax makes it beginner-
+  friendly and great for rapid development.
+- Rich Environment for Machine Learning and AI: Python is the go-to language for machine learning and artificial intelligence, thanks to libraries like TensorFlow, Keras, PyTorch, and Scikit-learn. This is important if you plan to extend your numerical results to predictive models or data-driven insights
+- Parallel Processing and Scalability: Python has frameworks like Dask and multiprocessing for parallel processing, which, when combined with Fortran's computational power, can result in highly efficient workflows for big data or simulations.
+
+Disadvantages of Python:
+
+    Performance Limitations:
+        Python is an interpreted language, which makes it slower for intensive computational tasks.
+

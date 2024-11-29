@@ -1,0 +1,508 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Documentation for Assignment2">
+    <meta name="author" content="Alberto Salvador" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>matmatmul &ndash; Assignment2</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">Assignment2 </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/programs.html">Programs</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>matmatmul      <small>Program</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title="87.1% of total for programs.">81 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/matmatmul.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/matmatmul.f90.html'>matmatmul.f90</a></li>
+            <li class="breadcrumb-item active" aria-current="page">matmatmul</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(function () {
+    $('[data-bs-toggle="tooltip"]').tooltip()
+    })
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#vars-0"
+         aria-expanded="false" aria-controls="vars-0">
+         <h4 class="card-header bg-primary text-white">Variables</h4>
+      </a>
+      <div id="vars-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../program/matmatmul.html#variable-dims">dims</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-a~4">A</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-b~4">B</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-c~4">C</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-ii">ii</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-jj">jj</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-dim~4">dim</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-rep_meas">rep_meas</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-max_printable_size">max_printable_size</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-start_time">start_time</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-end_time">end_time</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-exec_time_1">exec_time_1</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-exec_time_2">exec_time_2</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-exec_time_3">exec_time_3</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-debug~8">debug</a>
+            <a class="list-group-item" href="../program/matmatmul.html#variable-verbosity">verbosity</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+        <div class="card mb-4">
+      <h3 class="card-header card-title bg-light">Uses</h3>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/matmul_methods.html'>matmul_methods</a></li>
+                  <li class="list-inline-item"><a href='../module/matrix_utils.html'>matrix_utils</a></li>
+                  <li class="list-inline-item"><a href='../module/debugger_matmul.html'>debugger_matmul</a></li>
+              </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+
+    <p>Program that benchmark different methods of performing the matrix multiplication in Fortran, measuring the time it takes to perform it.
+You can set different sizes of the square matrices to be multiplied and perform the multiplication multiple times in order to get an average result.</p>
+<br>
+
+    <section>
+    <h2>Variables</h2>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dims"></span>
+              integer,
+            </td>
+            <td>
+              dimension(3)
+            </td>
+            <td>::</td>
+            <td><strong>dims</strong></td>
+<td> =</td>
+                <td>[10, 15, 20]</td>
+            <td>
+                <p>Default values for the matrices' sizes to be tested. With this choice you have a total time of execution not too big, but you can always modify it if it is needed.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~4"></span>
+              real,
+            </td>
+            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>A</strong>(:,:)</td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>The rigth-most matrix in the multiplication.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~4"></span>
+              real,
+            </td>
+            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>B</strong>(:,:)</td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>The left-most matrix in the multiplication.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-c~4"></span>
+              real,
+            </td>
+            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>C</strong>(:,:)</td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>The product matrix.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ii"></span>
+              integer
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ii</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>index for looping with the different matrices dimensions.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-jj"></span>
+              integer
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>jj</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>index for looping with the repeated measures of the same configuration.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dim~4"></span>
+              integer
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dim</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>Specific dimension of the matrices.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rep_meas"></span>
+              integer
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rep_meas</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>Number of repeated measure to be taken for a single configuration.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-max_printable_size"></span>
+              integer
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>max_printable_size</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>Maximum size of a matrix to be printed in debugging mode.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-start_time"></span>
+              real
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>start_time</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>Initial execution's time.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-end_time"></span>
+              real
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>end_time</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>Final execution's time.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-exec_time_1"></span>
+              real
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>exec_time_1</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>Overall execution time.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-exec_time_2"></span>
+              real
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>exec_time_2</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>Overall execution time.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-exec_time_3"></span>
+              real
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>exec_time_3</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>Overall execution time.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-debug~8"></span>
+              logical
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>debug</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>Flag to be turned on in debugging mode.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-verbosity"></span>
+              integer
+            </td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>verbosity</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>Degree of verbosity in debugging mode. Possible values: 0 (no debug messages), 1 (checkpoints only), 2 (checkpoint and printing matrices if size is appropriate)</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    </section>
+    <br>
+    
+    
+    
+
+    
+
+
+    
+
+    
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              Assignment2
+ was developed by Alberto Salvador<br>              &copy; 2024 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
+
+    <!-- MathJax JavaScript
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
+
+  </body>
+</html>

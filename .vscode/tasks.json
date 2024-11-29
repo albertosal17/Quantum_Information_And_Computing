@@ -1,0 +1,24 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build fortran",
+            "type": "shell",
+            "command": "gfortran",
+            "args": [
+                "-o", //output file
+                "${fileDirname}/a.out",  //the output file
+                "${file}" // the source file
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "detail": "Compiling Fortran program"
+        
+        }
+    ]
+}
