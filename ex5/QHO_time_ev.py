@@ -29,7 +29,7 @@ def hermite(x, n):
     herm_coeffs[n] = 1
     return np.polynomial.hermite.hermval(x, herm_coeffs)
 
-def stationary_state(x,n):
+def stationary_state(x,n,m):
     """
     Returns the stationary state of order
     n of the quantum harmonic oscillator
@@ -46,8 +46,8 @@ def stationary_state(x,n):
     np.ndarray
         Stationary state of order n
     """
-    prefactor = 1./np.sqrt(2.**n * factorial(n)) * (1/(np.pi))**(0.25)
-    psi = prefactor * np.exp(- x**2 / 2) * hermite(x,n)
+    prefactor = 1./np.sqrt(2.**n * factorial(n)) * (m/(np.pi))**(0.25)
+    psi = prefactor * np.exp(- m*x**2 / 2) * hermite(np.sqrt(m)*x,n)
     return psi
 
 class Param:
@@ -72,10 +72,12 @@ class Param:
                  xmax: float,
                  num_x: int,
                  T: int,
+                 m:float,
                  timesteps: int,
                  im_time: bool = False) -> None:
         
         self.im_time = im_time   
+        self.m=m
 
         #space grid
         self.xmax = xmax
@@ -129,8 +131,8 @@ def init(par: Param, n:int , voffset: float=0.0, wfcoffset: float=0.0) -> Operat
     opr = Operators(len(par.x))
 
     # Quadratic potential
-    opr.V = 0.5 * (par.x - voffset) ** 2 #omega=1
-    opr.wfc = stationary_state(par.x-wfcoffset, n).astype(complex)
+    opr.V = (0.5/par.m)* (par.x - voffset) ** 2 #omega=1
+    opr.wfc = stationary_state(par.x-wfcoffset, n, par.m).astype(complex)
     opr.wfc /= np.sqrt(np.sum(np.abs(opr.wfc)**2)*par.dx) #normalization
 
     # coeffincient of the time propagator exponential operator
@@ -142,7 +144,7 @@ def init(par: Param, n:int , voffset: float=0.0, wfcoffset: float=0.0) -> Operat
     # Vedi la formula decomposizione Suzuki-trotter dalle slide di Siloi
     ###
     # Operator in momentum space 
-    opr.K = np.exp(-0.5 * (par.k ** 2) * par.dt * coeff) #(p^2/2m) * (deltaT/2) con m=1 
+    opr.K = np.exp(-(0.5/m) * (par.k ** 2) * par.dt * coeff) #(p^2/2m) * (deltaT/2) con m=1 
     # Operator in real space
     opr.R = np.exp(-0.5 * opr.V * par.dt * coeff)
 
@@ -163,10 +165,10 @@ def average_position(par: Param, opr: Operators) -> float:
 
     return x_avg_final * par.dx
 
-def plot_frame(x, n_frame, res, n):
+def plot_frame(x, n_frame, res, n,m):
     plt.figure(figsize=(8,8))
     plt.plot(x, res[0,n_frame,:], lw=3, alpha=.5, linestyle='--', label='wfc')
-    plt.plot(x, np.abs(stationary_state(x,n=n))**2, lw=3, alpha=.5, linestyle='-', label='stationary_state(n=0)')
+    plt.plot(x, np.abs(stationary_state(x,n=n, m=m))**2, lw=3, alpha=.5, linestyle='-', label='stationary_state(n=0)')
     plt.plot(x,  res[2,n_frame,:], label='potential')
     plt.ylim([0,1])
     plt.legend()
@@ -205,7 +207,7 @@ def split_op(par: Param, opr: Operators, q_0t_values: np.ndarray, plot_frames: b
     res[2,0,:] = opr.V
     avg_position_values[0] = average_position(par, opr)
     if plot_frames:
-        plot_frame(par.x, n_frame=0, res=res, n=n)
+        plot_frame(par.x, n_frame=0, res=res, n=n,m=par.m)
 
 
     #### DACANCELLARE
@@ -220,7 +222,7 @@ def split_op(par: Param, opr: Operators, q_0t_values: np.ndarray, plot_frames: b
     else:
         for i in range(par.timesteps): #for each timestep
             #updating the potential and consequently the time propagator in the space of positions
-            opr.V = 0.5 * (par.x - voffset - q_0t_values[i]) ** 2 #omega=1
+            opr.V = (0.5/par.m) * (par.x - voffset - q_0t_values[i]) ** 2 #omega=1
 
             coeff = 1 if par.im_time else 1j  
             opr.R = np.exp(-0.5 * opr.V * par.dt * coeff)
@@ -270,8 +272,8 @@ def calculate_energy(par: Param, opr: Operators) -> float:
     wfc_c = np.conj(wfc_r)
 
     # Finding the momentum and real-space energy terms
-    energy_k = 0.5 * wfc_c * np.fft.ifft((par.k ** 2) * wfc_k)
-    energy_r = wfc_c * opr.V * wfc_r
+    energy_k = 0.5 * wfc_c * np.fft.ifft((par.k ** 2) * wfc_k) ##CONTROLLA SE CI VA LA MASSA
+    energy_r = wfc_c * opr.V * wfc_r ##CONTROLLA SE CI VA LA MASSA
 
     # Integrating over all space
     energy_final = sum(energy_k + energy_r).real
@@ -291,8 +293,9 @@ def calculate_energy(par: Param, opr: Operators) -> float:
 nx = 1000 #numero di punti in cui è discretizzato lo spazio delle posizioni
 xmax = 4 # limite destro intervallo spazio delle posizioni
 nt = 30000 # timesteps = T / dt 
-tmax = 30000 # T
-
+tmax = 10000 # T
+m=1 ### CONTROLLA BENE CHE LA MASSA SIA CORRETTAMENTE APPLICATA IN GIRO SE VUOI CAMBIARNE VALORE DA 1 
+ 
 im_time=False #boolean flag to set imaginary-time evolution
 debug=True
 plot_frames = False
@@ -307,7 +310,7 @@ dbg.checkpoint("Inizializad variables", debug=debug)
 
 
 # parametri per discretizzazione
-params = Param(xmax=xmax, num_x=nx, timesteps=nt, T=tmax, im_time=im_time) 
+params = Param(xmax=xmax, num_x=nx, timesteps=nt, T=tmax, im_time=im_time, m=m) 
 dbg.checkpoint(f"Time-step size: dt={round(params.dt,4)}", debug=debug)
 q_0t_values = params.t / tmax
 
@@ -328,9 +331,9 @@ plt.show() """
 res, avg_position_values = split_op(par=params, opr=ops, q_0t_values=q_0t_values, debug=debug, plot_frames=plot_frames, n=n)
 dbg.checkpoint("Evolution computed", debug=debug)
 if plot_frames:
-    plot_frame(params.x, n_frame=1, res=res, n=n) #intermediate evolution time
-    plot_frame(params.x, n_frame=nt//2, res=res, n=n) #intermediate evolution time
-    plot_frame(params.x, n_frame=2*(nt//3), res=res, n=n) #past-intermediate evolution time
+    plot_frame(params.x, n_frame=1, res=res, n=n,m=m) #intermediate evolution time
+    plot_frame(params.x, n_frame=nt//2, res=res, n=n,m=m) #intermediate evolution time
+    plot_frame(params.x, n_frame=2*(nt//3), res=res, n=n, m=m) #past-intermediate evolution time
 
 
 # Plotting the time evolution 
