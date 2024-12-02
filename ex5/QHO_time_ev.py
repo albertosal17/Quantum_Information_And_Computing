@@ -6,7 +6,11 @@ from numpy.linalg import norm
 import math
 
 import debugger_module as dbg
+from matplotlib import rcParams
 
+# Change the font family
+color_cycle = plt.cm.Set1.colors  # Setting a predefined colormap for the plots
+plt.rcParams.update({'font.size': 24}) #setting font size for the plots
 
 def hermite(x, n):
     """
@@ -165,14 +169,26 @@ def average_position(par: Param, opr: Operators) -> float:
 
     return x_avg_final * par.dx
 
-def plot_frame(x, n_frame, res, n,m):
+def plot_frame(param, n_frame, res, avg_pos, n,m):
     plt.figure(figsize=(8,8))
-    plt.plot(x, res[0,n_frame,:], lw=3, alpha=.5, linestyle='--', label='wfc')
-    plt.plot(x, np.abs(stationary_state(x,n=n, m=m))**2, lw=3, alpha=.5, linestyle='-', label='stationary_state(n=0)')
-    plt.plot(x,  res[2,n_frame,:], label='potential')
+    plt.plot(param.x, res[0,n_frame,:], lw=2, alpha=.7, linestyle='-', label='$\psi(x,t)$ ', color=color_cycle[0])
+    plt.plot(param.x, np.abs(stationary_state(param.x,n=n, m=m))**2, lw=2, alpha=.7, linestyle='--', label='$\psi(x,0)$', color=color_cycle[1])
+    plt.plot(param.x,  res[2,n_frame,:], label='V(x,t)', color=color_cycle[2], lw=2)
+    plt.axvline(avg_pos[n_frame], linestyle='dotted', color=color_cycle[4], lw=2,  label=r"$\langle \psi | x | \psi \rangle$")
     plt.ylim([0,1])
     plt.legend()
-    plt.title(f'frame {n_frame}')
+    #plt.title(f'FRAME {n_frame}\n(T={param.T}, timesteps={param.timesteps}, dt={round(param.dt,4)}, im_time={param.im_time})')
+    plt.title(f'timestep = {n_frame}')
+    #plt.title(f'T={param.T}, $\Delta t$={round(param.dt,3)}')
+    plt.xticks(np.arange(-4, 5))
+    plt.grid('True')
+    plt.xlabel("Position (x)")
+    plt.ylabel("Probability Density |ψ(x)|^2")
+    if param.im_time:
+        plt.savefig(f'/home/albertos/quantumInfo/ex5/plots/QHO_imtime_T{param.T}_frame{n_frame}'+'.svg', format='svg', bbox_inches='tight')
+    else:
+        plt.savefig(f'/home/albertos/quantumInfo/ex5/plots/QHO_T{param.T}_frame{n_frame}'+'.svg', format='svg', bbox_inches='tight')
+    
     plt.show()
 
 def split_op(par: Param, opr: Operators, q_0t_values: np.ndarray, plot_frames: bool, n:int, voffset: float=0.0, debug: bool=False) -> None:
@@ -206,21 +222,18 @@ def split_op(par: Param, opr: Operators, q_0t_values: np.ndarray, plot_frames: b
     res[1,0,:] =  np.abs(np.fft.fft(opr.wfc))**2
     res[2,0,:] = opr.V
     avg_position_values[0] = average_position(par, opr)
-    if plot_frames:
-        plot_frame(par.x, n_frame=0, res=res, n=n,m=par.m)
 
-
-    #### DACANCELLARE
+    """     #### DACANCELLARE
     stopping_index = q_0t_values.shape[0]//2
     q_0t_values[stopping_index+1:] = q_0t_values[stopping_index]
-    ###
+    ### """
 
 
     #### CHECK CHE q_0t_values ABBIA DIMENSIONE par.timesteps
     if q_0t_values.shape[0] != par.timesteps:
         dbg.error(f"Invalid shape for q_0t_values: should have dimension {par.timesteps} while it has dimension {q_0t_values.shape[0]}")
     else:
-        for i in range(par.timesteps): #for each timestep
+        for i in range(1, par.timesteps): #for each timestep
             #updating the potential and consequently the time propagator in the space of positions
             opr.V = (0.5/par.m) * (par.x - voffset - q_0t_values[i]) ** 2 #omega=1
 
@@ -287,21 +300,96 @@ def calculate_energy(par: Param, opr: Operators) -> float:
 ## Plot the square norm of |Ψ(𝑡)⟩ as a function of 𝑞 at different times
 ## and the average position of the particle as a function of 𝑡.
 ##
+def evolution_code(xmax, nx, tmax, nt, im_time, m, n, voffset, wfcoffset, debug, plot_frames, anim, frames=None):
+    # parametri per discretizzazione
+    params = Param(xmax=xmax, num_x=nx, timesteps=nt, T=tmax, im_time=im_time, m=m) 
+    dbg.checkpoint(f"Time-step size: dt={round(params.dt,4)}", debug=debug)
+    q_0t_values = params.t / tmax
+
+    # inizializzazione funzione d'onda (al ground state) e operatori evoluzione temporale
+    ops = init(params, n, voffset, wfcoffset) #operatori e funzione d'onda QHO
+    #plotting the inizialized state
+    """ plt.figure(figsize=(8,8))
+    plt.plot(params.x, np.abs(ops.wfc)**2, lw=3, alpha=.5, linestyle='--', label='wfc')
+    plt.plot(params.x, np.abs(stationary_state(params.x,n=n))**2, lw=3, alpha=.5, linestyle='-', label='stationary_state(n=0)')
+    plt.plot(params.x,  ops.V, label='potential')
+    plt.ylim([0,1])
+    plt.legend()
+    plt.title('initialized state')
+    plt.show() """
+
+    # Time evolution
+    res, avg_position_values = split_op(par=params, opr=ops, q_0t_values=q_0t_values, debug=debug, plot_frames=plot_frames, n=n)
+    dbg.checkpoint("Evolution computed", debug=debug)
+    if plot_frames and frames is not None:
+        for fr in frames:
+            plot_frame(params, n_frame=fr, res=res,avg_pos=avg_position_values, n=n,m=m) #intermediate evolution time
+
+    if anim:
+        # Plotting the time evolution 
+        step_interval = max(params.timesteps // 200, 1)  # Ensure at least 200 frames, adjust as needed (20000//500=40)
+        selected_frames = range(0, params.timesteps+1, step_interval)
+
+        fig, ax = plt.subplots()
+        ax.set_xlim(-params.xmax, params.xmax)
+        ax.set_ylim(0, 1)
+        ax.set_xlabel("Position (x)")
+        ax.set_ylabel("Probability Density |ψ(x)|^2")
+
+        line_V, = ax.plot([], [], lw=2, label="Potential V(x)", color='gray', linestyle='--')
+        line, = ax.plot([], [], lw=2, label="Wave Function |ψ(x)|^2", color='blue')
+        vertical_line, = ax.plot([], [], lw=2, color='red', label='Average position')
+        ax.legend()
+
+        # Initialization function for the animation
+        def init_lines():
+            line.set_data([], [])
+            line_V.set_data([], [])
+            vertical_line.set_data([], [])
+
+            return line, line_V, vertical_line
+
+        # Animation function that updates the plot at each frame
+        def animate(i):
+            x = params.x
+            y = res[0, i, :]
+            y_V = res[2, i,:]
+
+            #vertical line for the average position
+            x_vertical = [avg_position_values[i]]  # Vertical line x-position at timestep i
+            y_vertical = [0, 1]  # Full height of the plot
+
+            line.set_data(x, y)
+            line_V.set_data(x, y_V)
+            vertical_line.set_data([x_vertical[0], x_vertical[0]], y_vertical)  # Plot as a vertical line
+            return line, line_V, vertical_line
+
+        # Create the animation
+        anim = animation.FuncAnimation(
+            fig, animate, init_func=init_lines, frames=selected_frames, interval=40, blit=False
+        )
+
+        # Save the animation as a GIF
+        writer = animation.PillowWriter(fps=1, metadata=dict(artist='Me'), bitrate=1800)
+        anim.save('/home/albertos/quantumInfo/ex5/real_space.gif', writer=writer)
+
+        plt.show()
 
 
 #initializing variables
 nx = 1000 #numero di punti in cui è discretizzato lo spazio delle posizioni
 xmax = 4 # limite destro intervallo spazio delle posizioni
 nt = 30000 # timesteps = T / dt 
-tmax = 10000 # T
 m=1 ### CONTROLLA BENE CHE LA MASSA SIA CORRETTAMENTE APPLICATA IN GIRO SE VUOI CAMBIARNE VALORE DA 1 
  
-im_time=False #boolean flag to set imaginary-time evolution
+im_time=True #boolean flag to set imaginary-time evolution
 debug=True
-plot_frames = False
+plot_frames = True
+frames=[1, 145, 250] ###PERCHE ALL'INDEX nt IL POTENZIALE E'ZERO?
+anim=False
 
 # wavefunction
-n=0 # livello energetico dell'oscillatore armonico da simulare. 0 è il ground state
+n=4 # livello energetico dell'oscillatore armonico da simulare. 0 è il ground state
 wfcoffset=0 #offset della funzione d'onda rispetto l'origine
 
 voffset=0
@@ -309,84 +397,8 @@ voffset=0
 dbg.checkpoint("Inizializad variables", debug=debug)
 
 
-# parametri per discretizzazione
-params = Param(xmax=xmax, num_x=nx, timesteps=nt, T=tmax, im_time=im_time, m=m) 
-dbg.checkpoint(f"Time-step size: dt={round(params.dt,4)}", debug=debug)
-q_0t_values = params.t / tmax
-
-
-# inizializzazione funzione d'onda (al ground state) e operatori evoluzione temporale
-ops = init(params, n, voffset, wfcoffset) #operatori e funzione d'onda QHO
-#plotting the inizialized state
-""" plt.figure(figsize=(8,8))
-plt.plot(params.x, np.abs(ops.wfc)**2, lw=3, alpha=.5, linestyle='--', label='wfc')
-plt.plot(params.x, np.abs(stationary_state(params.x,n=n))**2, lw=3, alpha=.5, linestyle='-', label='stationary_state(n=0)')
-plt.plot(params.x,  ops.V, label='potential')
-plt.ylim([0,1])
-plt.legend()
-plt.title('initialized state')
-plt.show() """
-
-# Time evolution
-res, avg_position_values = split_op(par=params, opr=ops, q_0t_values=q_0t_values, debug=debug, plot_frames=plot_frames, n=n)
-dbg.checkpoint("Evolution computed", debug=debug)
-if plot_frames:
-    plot_frame(params.x, n_frame=1, res=res, n=n,m=m) #intermediate evolution time
-    plot_frame(params.x, n_frame=nt//2, res=res, n=n,m=m) #intermediate evolution time
-    plot_frame(params.x, n_frame=2*(nt//3), res=res, n=n, m=m) #past-intermediate evolution time
-
-
-# Plotting the time evolution 
-step_interval = max(params.timesteps // 200, 1)  # Ensure at least 200 frames, adjust as needed (20000//500=40)
-selected_frames = range(0, params.timesteps+1, step_interval)
-
-fig, ax = plt.subplots()
-ax.set_xlim(-params.xmax, params.xmax)
-ax.set_ylim(0, 1)
-ax.set_xlabel("Position (x)")
-ax.set_ylabel("Probability Density |ψ(x)|^2")
-
-line_V, = ax.plot([], [], lw=2, label="Potential V(x)", color='gray', linestyle='--')
-line, = ax.plot([], [], lw=2, label="Wave Function |ψ(x)|^2", color='blue')
-vertical_line, = ax.plot([], [], lw=2, color='red', label='Average position')
-ax.legend()
-
-# Initialization function for the animation
-def init_lines():
-    line.set_data([], [])
-    line_V.set_data([], [])
-    vertical_line.set_data([], [])
-
-    return line, line_V, vertical_line
-
-# Animation function that updates the plot at each frame
-def animate(i):
-    x = params.x
-    y = res[0, i, :]
-    y_V = res[2, i,:]
-
-    #vertical line for the average position
-    x_vertical = [avg_position_values[i]]  # Vertical line x-position at timestep i
-    y_vertical = [0, 1]  # Full height of the plot
-
-    line.set_data(x, y)
-    line_V.set_data(x, y_V)
-    vertical_line.set_data([x_vertical[0], x_vertical[0]], y_vertical)  # Plot as a vertical line
-    return line, line_V, vertical_line
-
-# Create the animation
-anim = animation.FuncAnimation(
-    fig, animate, init_func=init_lines, frames=selected_frames, interval=40, blit=True
-)
-
-# Save the animation as a GIF
-writer = animation.PillowWriter(fps=1, metadata=dict(artist='Me'), bitrate=1800)
-anim.save('/home/albertos/quantumInfo/ex5/real_space.gif', writer=writer)
-
-
-plt.show()
-
-
-
-#############################################################################################
-#Repeat the same operations but this time for different values of T
+T_values = [500, 2000, 5000, 10000, 20000, 30000, 40000]
+for TT in T_values:
+    dbg.checkpoint("--------------------", debug=debug)
+    dbg.checkpoint(f"Execution T={TT}", debug=debug)
+    evolution_code(xmax=xmax, nx=nx, nt=nt, tmax=TT, im_time=im_time, m=m, n=n, voffset=voffset, wfcoffset=wfcoffset, debug=debug, plot_frames=plot_frames, anim=anim, frames=frames)
