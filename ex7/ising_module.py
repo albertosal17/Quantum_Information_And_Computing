@@ -2,6 +2,9 @@ import numpy as np
 
 import debugger_module as dbg
 
+#############################################################àà
+#See the updated ising_module_sparse for the final version (commented and documented) of this code
+##############################################################
 
 def pauli_matrix(choice):
 
@@ -40,7 +43,7 @@ def gen_hamiltonian_field(N, debug=False):
             matrices.append(mat_sx) # append to the list of matrice I will compute the tensor product at the end
         
         # The pauli matrix describing the interaction with the field for the spin at position kk
-        sigma_z = pauli_matrix('x')        
+        sigma_z = pauli_matrix('z')        
         matrices.append(sigma_z) # append to the list of matrice I will compute the tensor product at the end
 
         #Building up the partial tensor product, right side
@@ -91,8 +94,8 @@ def gen_hamiltonian_pairs(N, debug=False):
             matricess.append(mat_sx) # append to the list of matrice I will compute the tensor product at the end
         
         # The pauli matrices describing the interaction with the field for the spin at position ii
-        sigma_x_i = pauli_matrix('z')    
-        sigma_x_i_plus_one = pauli_matrix('z')    
+        sigma_x_i = pauli_matrix('x')    
+        sigma_x_i_plus_one = pauli_matrix('x')    
         # append to the list of matrice I will compute the tensor product at the end
         matricess.append(sigma_x_i)
         matricess.append(sigma_x_i_plus_one)   
